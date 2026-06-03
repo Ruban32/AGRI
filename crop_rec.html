@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Crop Recommendation - Smart Agriculture System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="mb-4"><i class="fas fa-seedling text-success"></i> Crop Recommendation System</h2>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <p class="text-muted mb-4">Enter your soil and weather parameters to get the best crop recommendation.</p>
+
+                    <form id="cropForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nitrogen" class="form-label">Nitrogen (N) Level (mg/kg)</label>
+                                <input type="number" class="form-control" id="nitrogen" name="nitrogen" step="0.01" min="0" max="150" required>
+                                <small class="text-muted">Typical range: 20-140</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="phosphorus" class="form-label">Phosphorus (P) Level (mg/kg)</label>
+                                <input type="number" class="form-control" id="phosphorus" name="phosphorus" step="0.01" min="0" max="150" required>
+                                <small class="text-muted">Typical range: 5-145</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="potassium" class="form-label">Potassium (K) Level (mg/kg)</label>
+                                <input type="number" class="form-control" id="potassium" name="potassium" step="0.01" min="0" max="210" required>
+                                <small class="text-muted">Typical range: 9-205</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="ph" class="form-label">Soil pH</label>
+                                <input type="number" class="form-control" id="ph" name="ph" step="0.1" min="4" max="9" required>
+                                <small class="text-muted">Typical range: 5.0-8.5</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="rainfall" class="form-label">Annual Rainfall (mm)</label>
+                                <input type="number" class="form-control" id="rainfall" name="rainfall" step="1" min="0" max="2500" required>
+                                <small class="text-muted">Typical range: 200-2500</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="temperature" class="form-label">Average Temperature (°C)</label>
+                                <input type="number" class="form-control" id="temperature" name="temperature" step="0.1" min="0" max="50" required>
+                                <small class="text-muted">Typical range: 10-45</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="humidity" class="form-label">Average Humidity (%)</label>
+                            <input type="number" class="form-control" id="humidity" name="humidity" step="1" min="0" max="100" required>
+                            <small class="text-muted">Typical range: 30-100</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-magic"></i> Get Recommendation
+                        </button>
+                    </form>
+
+                    <div id="result" style="display:none;" class="mt-4">
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading"><i class="fas fa-check-circle"></i> Recommendation</h4>
+                            <p id="resultMessage"></p>
+                            <hr>
+                            <p class="mb-0"><strong>Predicted Crop:</strong> <span id="resultCrop" style="font-size: 1.2em; color: #155724;"></span></p>
+                            <p class="mb-0"><strong>Confidence:</strong> <span id="resultConfidence" style="font-size: 1.2em; color: #155724;"></span></p>
+                        </div>
+                    </div>
+
+                    <div id="error" style="display:none;" class="mt-4">
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation-circle"></i> Error</h4>
+                            <p id="errorMessage"></p>
+                        </div>
+                    </div>
+
+                    <div id="loading" style="display:none;" class="mt-4 text-center">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('cropForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        nitrogen: parseFloat(document.getElementById('nitrogen').value),
+        phosphorus: parseFloat(document.getElementById('phosphorus').value),
+        potassium: parseFloat(document.getElementById('potassium').value),
+        ph: parseFloat(document.getElementById('ph').value),
+        rainfall: parseFloat(document.getElementById('rainfall').value),
+        temperature: parseFloat(document.getElementById('temperature').value),
+        humidity: parseFloat(document.getElementById('humidity').value)
+    };
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    
+    fetch('{{ url_for("crop_recommendation") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('loading').style.display = 'none';
+        if (data.success) {
+            document.getElementById('resultCrop').textContent = data.crop;
+            document.getElementById('resultConfidence').textContent = data.confidence;
+            document.getElementById('resultMessage').textContent = data.message;
+            document.getElementById('result').style.display = 'block';
+        } else {
+            document.getElementById('errorMessage').textContent = data.error;
+            document.getElementById('error').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('errorMessage').textContent = 'An error occurred: ' + error;
+        document.getElementById('error').style.display = 'block';
+    });
+});
+</script>
+{% endblock %}
