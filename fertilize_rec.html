@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Fertilizer Recommendation - Smart Agriculture System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="mb-4"><i class="fas fa-droplet text-success"></i> Fertilizer Recommendation System</h2>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <p class="text-muted mb-4">Select your crop and soil parameters to get fertilizer recommendations.</p>
+
+                    <form id="fertilizerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="crop" class="form-label">Crop Type</label>
+                                <select class="form-select" id="crop" name="crop" required>
+                                    <option value="">Select a crop...</option>
+                                    <option value="Rice">Rice</option>
+                                    <option value="Wheat">Wheat</option>
+                                    <option value="Maize">Maize</option>
+                                    <option value="Cotton">Cotton</option>
+                                    <option value="Sugarcane">Sugarcane</option>
+                                    <option value="Potato">Potato</option>
+                                    <option value="Tomato">Tomato</option>
+                                    <option value="Onion">Onion</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="soil_type" class="form-label">Soil Type</label>
+                                <select class="form-select" id="soil_type" name="soil_type" required>
+                                    <option value="">Select soil type...</option>
+                                    <option value="Loamy">Loamy</option>
+                                    <option value="Clay">Clay</option>
+                                    <option value="Sandy">Sandy</option>
+                                    <option value="Silt">Silt</option>
+                                    <option value="Peat">Peat</option>
+                                    <option value="Alluvial">Alluvial</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nitrogen" class="form-label">Current Nitrogen Level (mg/kg)</label>
+                                <input type="number" class="form-control" id="nitrogen" name="nitrogen" step="0.01" min="0" max="150" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="phosphorus" class="form-label">Current Phosphorus Level (mg/kg)</label>
+                                <input type="number" class="form-control" id="phosphorus" name="phosphorus" step="0.01" min="0" max="150" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="potassium" class="form-label">Current Potassium Level (mg/kg)</label>
+                                <input type="number" class="form-control" id="potassium" name="potassium" step="0.01" min="0" max="210" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="moisture" class="form-label">Soil Moisture (%)</label>
+                                <input type="number" class="form-control" id="moisture" name="moisture" step="0.1" min="0" max="50" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-magic"></i> Get Fertilizer Recommendation
+                        </button>
+                    </form>
+
+                    <div id="result" style="display:none;" class="mt-4">
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading"><i class="fas fa-check-circle"></i> Recommendation</h4>
+                            <p id="resultMessage"></p>
+                            <hr>
+                            <p class="mb-0"><strong>Recommended Fertilizer:</strong> <span id="resultFertilizer" style="font-size: 1.2em; color: #004085;"></span></p>
+                            <p class="mb-0"><strong>Confidence:</strong> <span id="resultConfidence" style="font-size: 1.2em; color: #004085;"></span></p>
+                        </div>
+                    </div>
+
+                    <div id="error" style="display:none;" class="mt-4">
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation-circle"></i> Error</h4>
+                            <p id="errorMessage"></p>
+                        </div>
+                    </div>
+
+                    <div id="loading" style="display:none;" class="mt-4 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('fertilizerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        nitrogen: parseFloat(document.getElementById('nitrogen').value),
+        phosphorus: parseFloat(document.getElementById('phosphorus').value),
+        potassium: parseFloat(document.getElementById('potassium').value),
+        crop: document.getElementById('crop').value,
+        soil_type: document.getElementById('soil_type').value,
+        moisture: parseFloat(document.getElementById('moisture').value)
+    };
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    
+    fetch('{{ url_for("fertilizer_recommendation") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('loading').style.display = 'none';
+        if (data.success) {
+            document.getElementById('resultFertilizer').textContent = data.fertilizer;
+            document.getElementById('resultConfidence').textContent = data.confidence;
+            document.getElementById('resultMessage').textContent = data.message;
+            document.getElementById('result').style.display = 'block';
+        } else {
+            document.getElementById('errorMessage').textContent = data.error;
+            document.getElementById('error').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('errorMessage').textContent = 'An error occurred: ' + error;
+        document.getElementById('error').style.display = 'block';
+    });
+});
+</script>
+{% endblock %}
