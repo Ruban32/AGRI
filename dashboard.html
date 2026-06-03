@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Smart Agriculture System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-tachometer-alt text-success"></i> Welcome, {{ farmer_name }}!</h2>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Total Predictions</h5>
+                    <p class="card-text" style="font-size: 2em;">{{ total_predictions }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Crop Recommendations</h5>
+                    <p class="card-text" style="font-size: 2em;">8</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Fertilizer Recs</h5>
+                    <p class="card-text" style="font-size: 2em;">8</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Yield Predictions</h5>
+                    <p class="card-text" style="font-size: 2em;">-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Buttons -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a href="{{ url_for('crop_recommendation') }}" class="btn btn-success btn-lg w-100">
+                <i class="fas fa-seedling"></i> Crop Recommendation
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('fertilizer_recommendation') }}" class="btn btn-primary btn-lg w-100">
+                <i class="fas fa-droplet"></i> Fertilizer Recommendation
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('yield_prediction') }}" class="btn btn-info btn-lg w-100">
+                <i class="fas fa-chart-line"></i> Yield Prediction
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Predictions -->
+    <div class="row">
+        <div class="col">
+            <h4>Recent Predictions</h4>
+            {% if predictions %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Type</th>
+                            <th>Result</th>
+                            <th>Confidence</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pred in predictions[:5] %}
+                        <tr>
+                            <td>
+                                {% if pred['prediction_type'] == 'crop_recommendation' %}
+                                <span class="badge bg-success">Crop</span>
+                                {% elif pred['prediction_type'] == 'fertilizer_recommendation' %}
+                                <span class="badge bg-primary">Fertilizer</span>
+                                {% else %}
+                                <span class="badge bg-info">Yield</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ pred['result'] }}</td>
+                            <td>{{ "%.2f"|format(pred['confidence'] * 100) }}%</td>
+                            <td>{{ pred['created_at'].strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{{ url_for('prediction_history') }}" class="btn btn-outline-success">View All History</a>
+            {% else %}
+            <div class="alert alert-info">No predictions yet. Start by making a recommendation!</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
