@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Smart Agriculture System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="mb-4"><i class="fas fa-user-circle text-success"></i> My Profile</h2>
+
+            {% if farmer %}
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle fa-5x text-success"></i>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Full Name</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['farmer_name'] }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Email Address</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['email'] }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Phone Number</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['phone'] }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Location</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['location'] }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Farm Size</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['farm_size'] if farmer['farm_size'] else 'Not specified' }} hectares</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Soil Type</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['soil_type'] if farmer['soil_type'] else 'Not specified' }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Member Since</strong></label>
+                        <p class="form-control-plaintext">{{ farmer['created_at'].strftime('%d %B %Y') }}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-success w-100">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-danger">Unable to load profile information.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
