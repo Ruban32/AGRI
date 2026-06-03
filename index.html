@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Smart Agriculture System{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-success text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold">AI-Powered Smart Agriculture</h1>
+                <p class="lead">Maximize your crop yield with AI-driven recommendations and predictions</p>
+                {% if not session.loggedin %}
+                <div class="mt-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-2">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">Login</a>
+                </div>
+                {% else %}
+                <div class="mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg me-2">Go to Dashboard</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-center">
+                <i class="fas fa-leaf" style="font-size: 150px; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Key Features</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-seedling fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Crop Recommendation</h5>
+                    <p class="card-text">Get AI-powered recommendations for the best crops to plant based on soil parameters and weather conditions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-droplet fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Fertilizer Recommendation</h5>
+                    <p class="card-text">Optimize fertilizer usage with intelligent recommendations tailored to your crop and soil type.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Yield Prediction</h5>
+                    <p class="card-text">Predict your crop yield with machine learning models trained on agricultural data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-cloud-sun fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Weather Integration</h5>
+                    <p class="card-text">Real-time weather data integration to help you plan your farming activities.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-history fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Prediction History</h5>
+                    <p class="card-text">Track all your predictions and compare results over time to improve your farming strategy.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-lock fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Secure & Private</h5>
+                    <p class="card-text">Your data is secure with encrypted storage and password protection.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                        1
+                    </div>
+                </div>
+                <h5>Register & Login</h5>
+                <p>Create your farmer account and login to access the platform.</p>
+            </div>
+
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                        2
+                    </div>
+                </div>
+                <h5>Enter Farm Data</h5>
+                <p>Provide your soil parameters, weather data, and farming information.</p>
+            </div>
+
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                        3
+                    </div>
+                </div>
+                <h5>Get AI Predictions</h5>
+                <p>Receive personalized recommendations from our AI models.</p>
+            </div>
+
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                        4
+                    </div>
+                </div>
+                <h5>Improve Yield</h5>
+                <p>Implement recommendations and maximize your crop yield.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Why Choose Us?</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Advanced AI Models</h5>
+                    <p>Trained on extensive agricultural data for accurate predictions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Easy to Use</h5>
+                    <p>Simple and intuitive interface designed for farmers of all tech levels.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Real-time Data</h5>
+                    <p>Integration with weather APIs for current and accurate information.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-check-circle text-success fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Cost Effective</h5>
+                    <p>Reduce input costs and increase profitability with smart recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
