@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction History - Smart Agriculture System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4"><i class="fas fa-history text-success"></i> Prediction History</h2>
+
+    {% if predictions %}
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead class="table-success">
+                <tr>
+                    <th>Type</th>
+                    <th>Result</th>
+                    <th>Input Data</th>
+                    <th>Confidence</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pred in predictions %}
+                <tr>
+                    <td>
+                        {% if pred['prediction_type'] == 'crop_recommendation' %}
+                        <span class="badge bg-success"><i class="fas fa-seedling"></i> Crop</span>
+                        {% elif pred['prediction_type'] == 'fertilizer_recommendation' %}
+                        <span class="badge bg-primary"><i class="fas fa-droplet"></i> Fertilizer</span>
+                        {% else %}
+                        <span class="badge bg-info"><i class="fas fa-chart-line"></i> Yield</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ pred['result'] }}</strong></td>
+                    <td>
+                        <small class="text-muted">{{ pred['input_data'] }}</small>
+                    </td>
+                    <td>{{ "%.2f"|format(pred['confidence'] * 100) }}%</td>
+                    <td>{{ pred['created_at'].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <i class="fas fa-info-circle"></i> No predictions yet. Start making recommendations to build your prediction history!
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
